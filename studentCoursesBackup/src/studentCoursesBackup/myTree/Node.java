@@ -14,7 +14,8 @@ import java.util.List;
  */
 public class Node implements SubjectI, ObserverI,Cloneable{
     private List<Node> observers = new ArrayList<Node>();
-    
+    public Node leftChild=null;
+    public Node rightChild=null;    
     private List<String> courseName=new ArrayList<String>();
     private int Bnumber;
 

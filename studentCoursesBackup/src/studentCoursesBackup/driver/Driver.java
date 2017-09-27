@@ -27,6 +27,8 @@ public class Driver {
         */
         FileProcessor d = new FileProcessor();
 	Driver driver=new Driver();
+	TreeBuilder tb=new TreeBuilder();
+	String operation=null;
 	 /**A bufferedReader to be used to read the input file
         */
         BufferedReader br = null;
@@ -36,13 +38,14 @@ public class Driver {
         }
         try
         {
+	    operation="input";
             System.out.println("path="+args[0]);
             br = new BufferedReader(new FileReader(args[0]));
             String line=null;
             line=d.readLine(br);
             if(line!=null)
               {
-                driver.processLine(line);
+                driver.processLine(line,tb,operation);
               }
 	    while(line!=null)
             {
@@ -50,8 +53,31 @@ public class Driver {
                 line=d.readLine(br);
 		if(line!=null)
               	{
-                    driver.processLine(line);
+                    driver.processLine(line,tb,operation);
               	}
+            }
+	    br.close();
+            /*
+            * delete operation
+            */
+            operation="delete";
+	    String path2="C:\\Users\\Kishan\\Documents\\NetBeansProjects\\studentCoursesBackup\\src\\"+args[1];
+            System.out.println("path="+args[1]);
+            operation="delete";
+            br = new BufferedReader(new FileReader(args[1]));
+            line=null;
+            line=d.readLine(br);
+            if(line!=null)
+              {
+                driver.processLine(line,tb,operation);
+              }
+            while(line!=null)
+            {
+              line=d.readLine(br);
+              if(line!=null)
+              {
+                driver.processLine(line,tb,operation);
+              }
             }
             
         }
@@ -59,6 +85,10 @@ public class Driver {
         {
             System.out.println("File not found");
         }
+	catch(IOException ie)
+	{
+		System.out.println("can not close file");
+	}
         finally{
             try{
                 br.close();
@@ -85,47 +115,47 @@ public class Driver {
 		return str;
 	}
 	
-	private void processLine(String line) 
-	{
-		TreeBuilder tb=new TreeBuilder();
-       		String[] full_line=line.split(":");
-       		int value,Bnumber=-1;
-       		char course = 'z';
-       		if(full_line.length==2)
-       		{
-           
-        	try {
-            		value=Integer.parseInt(full_line[0]);
-            		Bnumber=value;
-            		if (full_line[1].matches(".*[A-Z].*")) 
-            		{ 
-                 		course=full_line[1].charAt(0);
-            		}
-			else
-			{
-				return;
-			}
-        	    } 
-		catch (NumberFormatException e) 
-		    {
-            			System.out.println("invalid line");
-            			//write system.err, not to sout
-        	    }
-        	finally{
-            
-        	}
-           	if(Bnumber>0 && course!='z') 
-        	{
-           		 System.out.println("bnumber="+Bnumber+" subject="+course);
-            		 try {
-                		tb.createNodes(Bnumber,course);
-            		 } catch (CloneNotSupportedException ex) 
-			 {
-                		Logger.getLogger(Driver.class.getName()).log(Level.SEVERE, null, ex);
-            		 }
-        	}
-       	}
+	 private void processLine(String line,TreeBuilder tb,String operation) {
+      //  System.out.println("line="+line);
        
-    }
-	
+      String[] full_line=line.split(":");
+       int value=-1,Bnumber=-1;
+       char course = 'z';
+       if(full_line.length==2)
+       {
+           
+        try {
+            value=Integer.parseInt(full_line[0]);
+            Bnumber=value;
+            if (full_line[1].matches(".*[A,B,C,D,E,F,G,H,I].*")) 
+            { 
+                 course=full_line[1].charAt(0);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("invalid line");
+            //write system.err, not to sout
+        }
+        finally{
+            
+        }
+        if(Bnumber>0 && course!='z') 
+        {
+            System.out.println("bnumber="+Bnumber+" subject="+course);
+            try 
+            {
+                if(operation.equals("input"))
+                {
+                  tb.createNodes(Bnumber,course);
+                }
+                else if(operation.equals("delete"))
+                {
+                  tb.deleteCourse(Bnumber,Character.toString(course));
+                }
+            } catch (CloneNotSupportedException ex) {
+                Logger.getLogger(Driver.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+       }
+       
+    }	
 }
