@@ -9,11 +9,13 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import myTree.Node;
 import myTree.ObserverI;
 import myTree.SubjectI;
 import util.FileProcessor;
-
+import util.TreeBuilder;
 /**
  *
  * @author Kishan
@@ -24,7 +26,7 @@ public class Driver {
          * file line by line
         */
         FileProcessor d = new FileProcessor();
-
+	Driver driver=new Driver();
 	 /**A bufferedReader to be used to read the input file
         */
         BufferedReader br = null;
@@ -38,10 +40,18 @@ public class Driver {
             br = new BufferedReader(new FileReader(args[0]));
             String line=null;
             line=d.readLine(br);
-            while(line!=null)
+            if(line!=null)
+              {
+                driver.processLine(line);
+              }
+	    while(line!=null)
             {
                 
                 line=d.readLine(br);
+		if(line!=null)
+              	{
+                    driver.processLine(line);
+              	}
             }
             
         }
@@ -57,28 +67,13 @@ public class Driver {
             {
                 System.out.println("Can not close file");
             }
+	    catch(NullPointerException ne)
+            {
+                
+            }
             
         }
 
-	 /**Object of Node class that will hold the node in
-        */
-        Node n=new Node("c",1234);
-	
-	 /**Object of SubjectI class that will act as subject 
-	  * for all observers
-        */
-        SubjectI node_origin=new SubjectI(n);
-
-	 /**Object of ObserverI class that will be a observer
-         * of subject named node_origin
-        */
-        ObserverI backup_Node_1=new ObserverI(node_origin);
-
-	 /**Object of ObserverI class that will be a observer
-         * of subject named node_origin
-        */
-        ObserverI backup_Node_2=new ObserverI(node_origin);
-        node_origin.setState(n);
     }
 
 	 /**A to String function to be used if it's needed to print Driver
@@ -89,4 +84,48 @@ public class Driver {
 		String str="this is a driver's object";
 		return str;
 	}
+	
+	private void processLine(String line) 
+	{
+		TreeBuilder tb=new TreeBuilder();
+       		String[] full_line=line.split(":");
+       		int value,Bnumber=-1;
+       		char course = 'z';
+       		if(full_line.length==2)
+       		{
+           
+        	try {
+            		value=Integer.parseInt(full_line[0]);
+            		Bnumber=value;
+            		if (full_line[1].matches(".*[A-Z].*")) 
+            		{ 
+                 		course=full_line[1].charAt(0);
+            		}
+			else
+			{
+				return;
+			}
+        	    } 
+		catch (NumberFormatException e) 
+		    {
+            			System.out.println("invalid line");
+            			//write system.err, not to sout
+        	    }
+        	finally{
+            
+        	}
+           	if(Bnumber>0 && course!='z') 
+        	{
+           		 System.out.println("bnumber="+Bnumber+" subject="+course);
+            		 try {
+                		tb.createNodes(Bnumber,course);
+            		 } catch (CloneNotSupportedException ex) 
+			 {
+                		Logger.getLogger(Driver.class.getName()).log(Level.SEVERE, null, ex);
+            		 }
+        	}
+       	}
+       
+    }
+	
 }
