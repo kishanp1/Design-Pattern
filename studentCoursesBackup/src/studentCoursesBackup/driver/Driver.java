@@ -15,68 +15,70 @@ import myTree.Node;
 import myTree.ObserverI;
 import myTree.SubjectI;
 import util.FileProcessor;
+import util.Results;
 import util.TreeBuilder;
+
 /**
  *
  * @author Kishan
  */
 public class Driver {
       public static void main(String[] args) {
-         /**Object of file processor that will be used to read input
-         * file line by line
-        */
+        // TODO code application logic here
         FileProcessor d = new FileProcessor();
-	Driver driver=new Driver();
-	TreeBuilder tb=new TreeBuilder();
-	String operation=null;
-	 /**A bufferedReader to be used to read the input file
-        */
+        Driver driver=new Driver();
+        TreeBuilder tb_original=new TreeBuilder();
+        TreeBuilder tb_backup1=new TreeBuilder();
+        TreeBuilder tb_backup2=new TreeBuilder();
         BufferedReader br = null;
+        String operation=null;
+        Results rs=new Results();
         if(args==null || args.length<=1)
         {
             System.out.println("please insert valid number of filename"+args.length+" "+args[0]);
         }
+        int flag=0;
         try
         {
-	    operation="input";
+            String path="C:\\Users\\Kishan\\Documents\\NetBeansProjects\\studentCoursesBackup\\src\\"+args[0];
             System.out.println("path="+args[0]);
+            operation="input";
             br = new BufferedReader(new FileReader(args[0]));
             String line=null;
             line=d.readLine(br);
             if(line!=null)
               {
-                driver.processLine(line,tb,operation);
-              }
-	    while(line!=null)
-            {
-                
-                line=d.readLine(br);
-		if(line!=null)
-              	{
-                    driver.processLine(line,tb,operation);
-              	}
-            }
-	    br.close();
-            /*
-            * delete operation
-            */
-            operation="delete";
-	    String path2="C:\\Users\\Kishan\\Documents\\NetBeansProjects\\studentCoursesBackup\\src\\"+args[1];
-            System.out.println("path="+args[1]);
-            operation="delete";
-            br = new BufferedReader(new FileReader(args[1]));
-            line=null;
-            line=d.readLine(br);
-            if(line!=null)
-              {
-                driver.processLine(line,tb,operation);
+                driver.processLine(line,tb_original,tb_backup1,tb_backup2,operation);
               }
             while(line!=null)
             {
               line=d.readLine(br);
               if(line!=null)
               {
-                driver.processLine(line,tb,operation);
+                driver.processLine(line,tb_original,tb_backup1,tb_backup2,operation);
+              }
+            }
+            br.close();
+            /*
+            * delete operation
+            */
+            String path2="C:\\Users\\Kishan\\Documents\\NetBeansProjects\\studentCoursesBackup\\src\\"+args[1];
+            System.out.println("path="+args[1]);
+            operation="delete";
+            br = new BufferedReader(new FileReader(args[1]));
+            line=null;
+            
+            line=d.readLine(br);
+            if(line!=null)
+              {
+                driver.processLine(line,tb_original,tb_backup1,tb_backup2,operation);
+              }
+            while(line!=null)
+            {
+              line=d.readLine(br);
+              if(line!=null)
+              {
+                driver.processLine(line,tb_original,tb_backup1,tb_backup2,operation);
               }
             }
             
@@ -84,38 +86,46 @@ public class Driver {
         catch(FileNotFoundException e)
         {
             System.out.println("File not found");
+            flag=1;
         }
-	catch(IOException ie)
-	{
-		System.out.println("can not close file");
-	}
-        finally{
+        catch(IOException ie)
+        {
+            System.out.println("Can not close file");
+            flag=1;
+        }
+        finally
+        {
             try{
                 br.close();
             }
             catch(IOException ie)
             {
+                flag=1;
                 System.out.println("Can not close file");
             }
-	    catch(NullPointerException ne)
+            catch(NullPointerException ne)
             {
-                
+                flag=1;
+                 System.out.println("Can not close file");
             }
             
         }
-
+        if(flag!=1)
+        {
+            tb_original.writeResults(rs,"original",args[2]);
+            System.out.println("check=="+rs.getResult());
+            rs.setResult(null);
+            System.out.println("===");
+            tb_backup1.writeResults(rs,"backup 1",args[3]);
+            rs.setResult(null);
+            tb_backup2.writeResults(rs,"backup 2",args[4]);
+            
+        }
+        
+       
     }
 
-	 /**A to String function to be used if it's needed to print Driver
-         * class's object
-        */
-	public String toString()
-	{
-		String str="this is a driver's object";
-		return str;
-	}
-	
-	 private void processLine(String line,TreeBuilder tb,String operation) {
+    private void processLine(String line,TreeBuilder tb_original,TreeBuilder tb_backup1,TreeBuilder tb_backup2,String operation) {
       //  System.out.println("line="+line);
        
       String[] full_line=line.split(":");
@@ -145,11 +155,11 @@ public class Driver {
             {
                 if(operation.equals("input"))
                 {
-                  tb.createNodes(Bnumber,course);
+                  tb_original.createNodes(Bnumber,course,tb_backup1,tb_backup2);
                 }
                 else if(operation.equals("delete"))
                 {
-                  tb.deleteCourse(Bnumber,Character.toString(course));
+                  tb_original.deleteCourse(Bnumber,Character.toString(course));
                 }
             } catch (CloneNotSupportedException ex) {
                 Logger.getLogger(Driver.class.getName()).log(Level.SEVERE, null, ex);
@@ -157,5 +167,5 @@ public class Driver {
         }
        }
        
-    }	
+    }
 }

@@ -16,11 +16,12 @@ public class TreeBuilder {
     Node node_origin;
     Node backup_Node_1;
     Node backup_Node_2;
+    Node tree_root=null;
     Node root_original=null,root_backup_1=null,root_backup_2=null;
 //    TreeBuilder tb_original=new TreeBuilder();
 //    TreeBuilder tb_backup_1=new TreeBuilder();
 //    TreeBuilder tb_backup_2=new TreeBuilder();
-    public void createNodes(int Bnumber, char courseName) throws CloneNotSupportedException
+    public void createNodes(int Bnumber, char courseName, TreeBuilder tb_backup1, TreeBuilder tb_backup2) throws CloneNotSupportedException
     {
         
           Node test=findNode(Bnumber);
@@ -32,23 +33,11 @@ public class TreeBuilder {
           System.out.println("original="+node_origin);
           System.out.println("bk node="+backup_Node_1);
           System.out.println("bk2 node="+backup_Node_2);
-          add(node_origin,"original");
-          add(backup_Node_1,"backup 1");
-          add(backup_Node_2,"backup 2");
+          this.add(node_origin,"original");
+          tb_backup1.add(backup_Node_1,"backup 1");
+          tb_backup2.add(backup_Node_2,"backup 2");
           
-          System.out.println("traversal original=");
-          inOrderTraverse(root_original);
-          System.out.println("end of traversal");
           
-          System.out.println(" ");
-          System.out.println("traversal backup 1=");
-          inOrderTraverse(root_backup_1);
-          System.out.println("end of traversal");
-          
-          System.out.println(" ");
-          System.out.println("traversal backup 2=");
-          inOrderTraverse(root_backup_2);
-          System.out.println("end of traversal");
           node_origin.registerObserver(backup_Node_1);
           node_origin.registerObserver(backup_Node_2);
           node_origin.addCourse(Character.toString(courseName));
@@ -81,6 +70,7 @@ public class TreeBuilder {
     */
     private void add(Node n,String s) {
         Node root=null;
+        /*
         if(s.equals("original"))
         {
             root = root_original;
@@ -92,7 +82,14 @@ public class TreeBuilder {
         else if(s.equals("backup 2"))
         {
             root = root_backup_2;
+        }*/
+        root=this.tree_root;
+        if(root==null)
+        {
+            this.tree_root=n;
         }
+        /*
+        
         if(root==null && s.equals("original"))
         {
             System.out.println("root_original changed");
@@ -105,7 +102,7 @@ public class TreeBuilder {
         else if(root==null && s.equals("backup 2"))
         {
             root_backup_2=n;
-        }
+        }*/
         else
         {
             Node focus=root;
@@ -139,18 +136,20 @@ public class TreeBuilder {
         }
     }
     
-    private void inOrderTraverse(Node n)
+    private void inOrderTraverse(Node n,Results rs)
     {
         if(n!=null)
         {
-            inOrderTraverse(n.leftChild);
+            inOrderTraverse(n.leftChild,rs);
+            rs.storeNewResult(n.toString());
             System.out.println(n);
-            inOrderTraverse(n.rightChild);
+            inOrderTraverse(n.rightChild,rs);
         }
     }
 
     private Node findNode(int Bnumber) {
-        Node focus=root_original;
+      //  Node focus=root_original;
+        Node focus=this.tree_root;
         if(focus==null)
         {
             return null;
@@ -177,7 +176,28 @@ public class TreeBuilder {
         return focus;
     }
 
+    public void writeResults(Results rs, String type, String fileName) {
+        /*
+        if(type.equals("original"))
+        {
+            inOrderTraverse(root_original,rs);
+            rs.writeToFile(fileName);
+        }
+        else if(type.equals("backup 1"))
+        {
+            inOrderTraverse(root_backup_1,rs);
+            rs.writeToFile(fileName);
+        }
+        else if(type.equals("backup 2"))
+        {
+            inOrderTraverse(root_backup_2,rs);
+            rs.writeToFile(fileName);
+        }
+         */
+        inOrderTraverse(this.tree_root,rs);
+        rs.writeToFile(fileName);
+    }
+
    
     
 }
-

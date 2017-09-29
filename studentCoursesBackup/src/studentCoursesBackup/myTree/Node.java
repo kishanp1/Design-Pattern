@@ -51,10 +51,10 @@ public class Node implements SubjectI, ObserverI,Cloneable{
         this.Bnumber = Bnumber;
     }
     
-  /*  public String toString()
+    public String toString()
     {
-        return this.Bnumber+" "+this.courseName;
-    }*/
+        return this.Bnumber+":"+this.courseName;
+    }
     
     public Node clone() throws CloneNotSupportedException
     {
