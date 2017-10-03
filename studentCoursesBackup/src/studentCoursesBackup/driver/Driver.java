@@ -56,11 +56,12 @@ public class Driver {
  	/** An object of result to write in output file
         */
 	Results rs=new Results();
-
-        if(args==null || args.length!=5)
+  
+        if(args==null || args.length!=5 || args[0].equals("${arg0}") || args[4].equals("${arg4}"))
         {
-            System.out.println("please insert valid number of filename"+args.length+" "+args[0]);
+            System.out.println("please insert valid number of filename");
         }
+	else{
         int flag=0;
         try
         {
@@ -140,7 +141,7 @@ public class Driver {
             
         }
         
-       
+       }
     }
 
 	/**

@@ -1,0 +1,225 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package util;
+
+import myTree.Node;
+
+/**
+ *
+ * @author Kishan
+ */
+public class TreeBuilder {
+    /**A Node's object to create original node
+     */        
+    Node node_origin;
+
+    /**A Node's object to create backup1 node
+     */
+    Node backup_Node_1;
+
+     /**A Node's object to create backup2 node
+     */
+    Node backup_Node_2;
+
+    /**A Node's object to use as this tree's root
+     */
+    Node tree_root=null;
+    Node root_original=null,root_backup_1=null,root_backup_2=null;
+  
+	/** This function will create a node if doesn't already exist
+	 * and create it's observers for original node
+         * if the node already exists then it will just add courses 
+         * @param An int Bnumber for Node
+	 * @param A char courseName for Node's course 
+         * @param tb_backup1 TreeBuilder object to create backup1
+	 * @param tb_backup2 TreeBuilder object to create backup2 int Bnumber for Node
+         * @return Void return 
+        */
+     public void createNodes(int Bnumber, char courseName, TreeBuilder tb_backup1, TreeBuilder tb_backup2) throws CloneNotSupportedException
+    {
+        
+          Node test=findNode(Bnumber);
+          if(test==null)
+          {
+          node_origin=new Node(Bnumber,Character.toString(courseName));
+          node_origin.addCourse(Character.toString(courseName));
+          backup_Node_1=(Node)node_origin.clone();
+          backup_Node_2=(Node)node_origin.clone();
+          System.out.println("original="+node_origin);
+          System.out.println("bk node="+backup_Node_1);
+          System.out.println("bk2 node="+backup_Node_2);
+          this.add(node_origin,"original");
+          tb_backup1.add(backup_Node_1,"backup 1");
+          tb_backup2.add(backup_Node_2,"backup 2");
+          
+          
+          node_origin.registerObserver(backup_Node_1);
+          node_origin.registerObserver(backup_Node_2);
+          
+          /*
+          node_origin.addCourse(Character.toString('F'));
+          node_origin.addCourse(Character.toString('K'));
+          node_origin.removeCourse(Character.toString('F'));
+          node_origin.addCourse(Character.toString('K'));
+          */
+          }
+          else
+          {
+              node_origin=test;
+              node_origin.addCourse(Character.toString(courseName));
+              Node backup1=tb_backup1.findNode(Bnumber);
+              Node backup2=tb_backup2.findNode(Bnumber);
+              backup1.addCourse(Character.toString(courseName));
+              backup2.addCourse(Character.toString(courseName));
+          }
+    }
+    /*
+    *reference: https://www.youtube.com/watch?v=M6lYob8STMI
+    */
+    public void deleteCourse(int Bnumber, String course) 
+    {
+          Node test=findNode(Bnumber);
+          if(test!=null)
+          {
+              test.removeCourse(course);
+          }
+    }
+    /*
+    *reference: https://www.youtube.com/watch?v=M6lYob8STMI
+    */
+    private void add(Node n,String s) {
+        Node root=null;
+        /*
+        if(s.equals("original"))
+        {
+            root = root_original;
+        }
+        else if(s.equals("backup 1"))
+        {
+            root = root_backup_1;
+        }
+        else if(s.equals("backup 2"))
+        {
+            root = root_backup_2;
+        }*/
+        root=this.tree_root;
+        if(root==null)
+        {
+            this.tree_root=n;
+        }
+        /*
+        
+        if(root==null && s.equals("original"))
+        {
+            System.out.println("root_original changed");
+            root_original=n;
+        }
+        else if(root==null && s.equals("backup 1"))
+        {
+            root_backup_1=n;
+        }
+        else if(root==null && s.equals("backup 2"))
+        {
+            root_backup_2=n;
+        }*/
+        else
+        {
+            Node focus=root;
+            Node parent;
+            while(true)
+            {
+                parent=focus;
+                if(n.getBnumber()<focus.getBnumber())
+                {
+                    focus=focus.leftChild;
+                    if(focus==null)
+                    {
+                        parent.leftChild=n;
+                        return;
+                    }
+                }
+                else if(n.getBnumber()>focus.getBnumber())
+                {
+                    focus=focus.rightChild;
+                    if(focus==null)
+                    {
+                        parent.rightChild=n;
+                        return;
+                    }
+                }
+                else
+                {
+                    focus.addCourse(s);
+                }
+            }
+        }
+    }
+    
+    private void inOrderTraverse(Node n,Results rs)
+    {
+        if(n!=null)
+        {
+            inOrderTraverse(n.leftChild,rs);
+            rs.storeNewResult(n.toString());
+            System.out.println(n);
+            inOrderTraverse(n.rightChild,rs);
+        }
+    }
+
+    private Node findNode(int Bnumber) {
+      //  Node focus=root_original;
+        Node focus=this.tree_root;
+        if(focus==null)
+        {
+            return null;
+        }
+        while(focus.getBnumber()!=Bnumber)
+        {
+            if(Bnumber==focus.getBnumber())
+            {
+                return focus;
+            }
+            if(Bnumber<focus.getBnumber())
+            {
+                focus=focus.leftChild;
+            }
+            else if(Bnumber>focus.getBnumber())
+            {
+                focus=focus.rightChild;
+            }
+            if(focus==null)
+            {
+                return null;
+            }
+        }
+        return focus;
+    }
+
+    public void writeResults(Results rs, String type, String fileName) {
+        /*
+        if(type.equals("original"))
+        {
+            inOrderTraverse(root_original,rs);
+            rs.writeToFile(fileName);
+        }
+        else if(type.equals("backup 1"))
+        {
+            inOrderTraverse(root_backup_1,rs);
+            rs.writeToFile(fileName);
+        }
+        else if(type.equals("backup 2"))
+        {
+            inOrderTraverse(root_backup_2,rs);
+            rs.writeToFile(fileName);
+        }
+         */
+        inOrderTraverse(this.tree_root,rs);
+        rs.writeToFile(fileName);
+    }
+
+   
+    
+}
