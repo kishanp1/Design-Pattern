@@ -61,6 +61,9 @@ import java.util.logging.Logger;
                 writer.write(this.result);
                 
             }
+	    catch(NullPointerException ne)
+	    {
+	    }
             catch(FileNotFoundException e)
             {
                 System.out.println("File not found");

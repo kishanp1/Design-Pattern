@@ -56,7 +56,7 @@ public class Driver {
  	/** An object of result to write in output file
         */
 	Results rs=new Results();
-  
+  	
         if(args==null || args.length!=5 || args[0].equals("${arg0}") || args[4].equals("${arg4}"))
         {
             System.out.println("please insert valid number of filename");
@@ -104,6 +104,10 @@ public class Driver {
             }
             
         }
+	catch(NullPointerException ne)
+	{
+		flag=1;
+	}
         catch(FileNotFoundException e)
         {
             System.out.println("File not found");
