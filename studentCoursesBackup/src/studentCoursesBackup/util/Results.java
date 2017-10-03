@@ -17,15 +17,34 @@ import java.util.logging.Logger;
  *
  * @author Kishan
  */public class Results implements FileDisplayInterface, StdoutDisplayInterface {
-    private String result;
 
+	/**A private member to store all the tree
+	*/   
+ private String result;
+
+/**getter method for result
+	 *@param no paramters
+	 *@return returns a String, which is the result member
+	*/
     public String getResult() {
         return result;
     }
 
+
+	/**Setter method for result
+	 *@param A string that will be the value for result
+	 *@return returns void
+	*/
     public void setResult(String result) {
         this.result = result;
     }
+
+/**An implementation of writeToFile method that will write 
+	 * the result to the given file
+	 * @param A string that will hold the path for the output file
+	 * 	  or the file to be written
+	 * @return void return
+	*/
     public void writeToFile(String s){ 
         
         if(s==null || s.length()==0)
@@ -60,10 +79,22 @@ import java.util.logging.Logger;
             }
         }
     }
+
+/**Implementation of writeToStdOut, not used in this specific
+	 * project
+	 * @param A string to be written to standard output
+	 * @return void return
+	*/
     public void writeToStdout(String s){
         System.out.println(s);
     }
     
+/**With each test, it's result will be added to result member
+	 * using the function storeNewResult
+	 *@param A string, which will be a node, that
+	* 	will be added into the result member of class
+	* @retunr returns void
+	*/
     public void storeNewResult(String s)
     {
         String temp;
@@ -77,7 +108,10 @@ import java.util.logging.Logger;
         }
         
     }
-     public String toString(){//implement  
+/**Overriding toString method, if its needed to print object
+	 * of Results in different manner
+	*/
+     public String toString(){
          return null;
         }
 }

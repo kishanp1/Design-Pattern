@@ -12,48 +12,66 @@ import myTree.Node;
  * @author Kishan
  */
 public class TreeBuilder {
-        
+    /**A node objet to create original node
+    */        
     Node node_origin;
+ 
+/**A node objet to create backup node1
+    */
     Node backup_Node_1;
+
+/**A node objet to create backup node2
+    */
     Node backup_Node_2;
+
+/**A node objet to use as root for this treebuilder
+    */
     Node tree_root=null;
     Node root_original=null,root_backup_1=null,root_backup_2=null;
-//    TreeBuilder tb_original=new TreeBuilder();
-//    TreeBuilder tb_backup_1=new TreeBuilder();
-//    TreeBuilder tb_backup_2=new TreeBuilder();
+
+     /** This function will create a node if doesn't exist 
+	*and create its observers, if node exists only add courses
+        * @param An int Bnumber for the node
+	* @param An char course for the node
+	* @param tb_backup1 treebuilder's object to create backup1 tree
+	* @param tb_backup2 treebuilder's object to create backup2 tree
+        * @return Void return
+        */
     public void createNodes(int Bnumber, char courseName, TreeBuilder tb_backup1, TreeBuilder tb_backup2) throws CloneNotSupportedException
     {
         
           Node test=findNode(Bnumber);
           if(test==null)
           {
-            node_origin=new Node(Bnumber,Character.toString(courseName));
+          node_origin=new Node(Bnumber,Character.toString(courseName));
+          node_origin.addCourse(Character.toString(courseName));
           backup_Node_1=(Node)node_origin.clone();
           backup_Node_2=(Node)node_origin.clone();
-          System.out.println("original="+node_origin);
-          System.out.println("bk node="+backup_Node_1);
-          System.out.println("bk2 node="+backup_Node_2);
-          this.add(node_origin,"original");
-          tb_backup1.add(backup_Node_1,"backup 1");
-          tb_backup2.add(backup_Node_2,"backup 2");
+          this.add(node_origin);
+          tb_backup1.add(backup_Node_1);
+          tb_backup2.add(backup_Node_2);
           
           
           node_origin.registerObserver(backup_Node_1);
           node_origin.registerObserver(backup_Node_2);
-          node_origin.addCourse(Character.toString(courseName));
-          /*
-          node_origin.addCourse(Character.toString('F'));
-          node_origin.addCourse(Character.toString('K'));
-          node_origin.removeCourse(Character.toString('F'));
-          node_origin.addCourse(Character.toString('K'));
-          */
+          
           }
           else
           {
               node_origin=test;
               node_origin.addCourse(Character.toString(courseName));
+              Node backup1=tb_backup1.findNode(Bnumber);
+              Node backup2=tb_backup2.findNode(Bnumber);
+              backup1.addCourse(Character.toString(courseName));
+              backup2.addCourse(Character.toString(courseName));
           }
     }
+
+    /**This function will find the node and delete the course
+	* @param An int Bnumber for the node
+        * @param An char course for the node
+        * @return Void return
+        */
     /*
     *reference: https://www.youtube.com/watch?v=M6lYob8STMI
     */
@@ -65,44 +83,20 @@ public class TreeBuilder {
               test.removeCourse(course);
           }
     }
-    /*
+/**This function will add a node to tree
+* @param An object of Node to be added
+* @param An char course for the node
+*/    
+/*
     *reference: https://www.youtube.com/watch?v=M6lYob8STMI
     */
-    private void add(Node n,String s) {
+    private void add(Node n) {
         Node root=null;
-        /*
-        if(s.equals("original"))
-        {
-            root = root_original;
-        }
-        else if(s.equals("backup 1"))
-        {
-            root = root_backup_1;
-        }
-        else if(s.equals("backup 2"))
-        {
-            root = root_backup_2;
-        }*/
         root=this.tree_root;
         if(root==null)
         {
             this.tree_root=n;
         }
-        /*
-        
-        if(root==null && s.equals("original"))
-        {
-            System.out.println("root_original changed");
-            root_original=n;
-        }
-        else if(root==null && s.equals("backup 1"))
-        {
-            root_backup_1=n;
-        }
-        else if(root==null && s.equals("backup 2"))
-        {
-            root_backup_2=n;
-        }*/
         else
         {
             Node focus=root;
@@ -128,27 +122,30 @@ public class TreeBuilder {
                         return;
                     }
                 }
-                else
-                {
-                    focus.addCourse(s);
-                }
+               
             }
         }
     }
     
+/**This function will traverse the tree in order
+* @param An object of Node 
+* @param An object of results to save tree
+*/
     private void inOrderTraverse(Node n,Results rs)
     {
         if(n!=null)
         {
             inOrderTraverse(n.leftChild,rs);
             rs.storeNewResult(n.toString());
-            System.out.println(n);
             inOrderTraverse(n.rightChild,rs);
         }
     }
 
+/**This function will find node from tree
+* @param An int Bnumber to find the node
+*/
+
     private Node findNode(int Bnumber) {
-      //  Node focus=root_original;
         Node focus=this.tree_root;
         if(focus==null)
         {
@@ -176,28 +173,25 @@ public class TreeBuilder {
         return focus;
     }
 
+/**This function will write the results to
+*results object
+* @param An object of result to write result
+* @param An String fileName to write file
+*/
+
     public void writeResults(Results rs, String type, String fileName) {
-        /*
-        if(type.equals("original"))
-        {
-            inOrderTraverse(root_original,rs);
-            rs.writeToFile(fileName);
-        }
-        else if(type.equals("backup 1"))
-        {
-            inOrderTraverse(root_backup_1,rs);
-            rs.writeToFile(fileName);
-        }
-        else if(type.equals("backup 2"))
-        {
-            inOrderTraverse(root_backup_2,rs);
-            rs.writeToFile(fileName);
-        }
-         */
         inOrderTraverse(this.tree_root,rs);
         rs.writeToFile(fileName);
     }
 
-   
+   /**A to String function to be used if it's needed to print TreeBuilder 
+	 * class's object
+	*@param NA
+	*@return returns a String
+	*/
+	public String toString(){
+	String str="this is a treebuilder's object";
+         return str;
+        }
     
 }

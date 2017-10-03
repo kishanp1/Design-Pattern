@@ -9,8 +9,14 @@ package myTree;
  *
  * @author Kishan
  */
-public interface ObserverI{
 
-   public void update();
+/**An Observer interface
+ */
+public interface ObserverI{
+  /**A function declaration of update
+   *@param A string named course
+   *@return void return
+   */
+   public void update(String course);
     
 }

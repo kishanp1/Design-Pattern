@@ -25,23 +25,45 @@ import util.TreeBuilder;
 public class Driver {
       public static void main(String[] args) {
         // TODO code application logic here
+	/** An object of file processor to read file line by line
+	*/
         FileProcessor d = new FileProcessor();
+
+	 /** An object of Driver itself to call other functions
+        */
         Driver driver=new Driver();
+
+	 /** An object of tree builder for original tree
+        */
         TreeBuilder tb_original=new TreeBuilder();
-        TreeBuilder tb_backup1=new TreeBuilder();
-        TreeBuilder tb_backup2=new TreeBuilder();
-        BufferedReader br = null;
+
+	 /** An object of tree builder for backup tree1
+        */
+	TreeBuilder tb_backup1=new TreeBuilder();
+
+         /** An object of tree builder for backup tree2
+        */
+	TreeBuilder tb_backup2=new TreeBuilder();
+
+	 /** A Buffer reader to read file
+        */
+	BufferedReader br = null;
+
+	 /** A string to specify input or delete
+        */
         String operation=null;
-        Results rs=new Results();
-        if(args==null || args.length<=1)
+
+ 	/** An object of result to write in output file
+        */
+	Results rs=new Results();
+
+        if(args==null || args.length!=5)
         {
             System.out.println("please insert valid number of filename"+args.length+" "+args[0]);
         }
         int flag=0;
         try
         {
-            String path="C:\\Users\\Kishan\\Documents\\NetBeansProjects\\studentCoursesBackup\\src\\"+args[0];
-            System.out.println("path="+args[0]);
             operation="input";
             br = new BufferedReader(new FileReader(args[0]));
             String line=null;
@@ -62,8 +84,6 @@ public class Driver {
             /*
             * delete operation
             */
-            String path2="C:\\Users\\Kishan\\Documents\\NetBeansProjects\\studentCoursesBackup\\src\\"+args[1];
-            System.out.println("path="+args[1]);
             operation="delete";
             br = new BufferedReader(new FileReader(args[1]));
             line=null;
@@ -113,9 +133,7 @@ public class Driver {
         if(flag!=1)
         {
             tb_original.writeResults(rs,"original",args[2]);
-            System.out.println("check=="+rs.getResult());
             rs.setResult(null);
-            System.out.println("===");
             tb_backup1.writeResults(rs,"backup 1",args[3]);
             rs.setResult(null);
             tb_backup2.writeResults(rs,"backup 2",args[4]);
@@ -125,8 +143,17 @@ public class Driver {
        
     }
 
+	/**
+         * This function will process the line first before giving
+         * it to tree Builder and discards the line if the courses
+	 * are invalid
+         * @param line received from the input or delete file
+	 * @param tb_original a treebuilder object tobuild original tree
+	 * @param tb_backup1 a treebuilder object tobuild backup tree 1
+	 * @param tb_backup2 a treebuilder object tobuild backup tree 2
+         * @return Void return
+        */
     private void processLine(String line,TreeBuilder tb_original,TreeBuilder tb_backup1,TreeBuilder tb_backup2,String operation) {
-      //  System.out.println("line="+line);
        
       String[] full_line=line.split(":");
        int value=-1,Bnumber=-1;
@@ -143,14 +170,12 @@ public class Driver {
             }
         } catch (NumberFormatException e) {
             System.out.println("invalid line");
-            //write system.err, not to sout
         }
         finally{
             
         }
         if(Bnumber>0 && course!='z') 
         {
-            System.out.println("bnumber="+Bnumber+" subject="+course);
             try 
             {
                 if(operation.equals("input"))
@@ -168,4 +193,13 @@ public class Driver {
        }
        
     }
+	/**A to String function to be used if it's needed to print Driver 
+	 * class's object
+	*/
+	public String toString()
+	{
+	 String str="this is a driver class's object";
+         return str;
+        }
+
 }

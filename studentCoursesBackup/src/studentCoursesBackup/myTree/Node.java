@@ -13,12 +13,44 @@ import java.util.List;
  * @author Kishan
  */
 public class Node implements SubjectI, ObserverI,Cloneable{
+    /**An Arraylist to store node's observers
+    */
     private List<Node> observers = new ArrayList<Node>();
+
+     /**An object of node to store left child
+    */
     public Node leftChild=null;
-    public Node rightChild=null;    
+
+    /**An object of node to store right child
+    */
+    public Node rightChild=null;
+
+    public Node getLeftChild() {
+        return leftChild;
+    }
+
+    public void setLeftChild(Node leftChild) {
+        this.leftChild = leftChild;
+    }
+
+    public Node getRightChild() {
+        return rightChild;
+    }
+
+    public void setRightChild(Node rightChild) {
+        this.rightChild = rightChild;
+    }
+
+     /**An Arraylist to store node's courses
+    */
     private List<String> courseName=new ArrayList<String>();
+
+     /**An int to store Bnumber of node
+    */
     private int Bnumber;
 
+    /**Node's constructor with bnumber and single course
+    */
     public Node(int Bnumber,String courseName) {
         
          if(!courseName.contains(courseName))
@@ -26,7 +58,10 @@ public class Node implements SubjectI, ObserverI,Cloneable{
              this.courseName.add(courseName);
          }
         this.Bnumber = Bnumber;
-    }
+    } 
+    
+     /**Node's constructor with bnumber and courseList
+    */
     public Node(int Bnumber,List<String> courseName) {
         
             this.courseName=courseName;
@@ -51,77 +86,84 @@ public class Node implements SubjectI, ObserverI,Cloneable{
         this.Bnumber = Bnumber;
     }
     
-    public String toString()
+  /**A to String function to be used if it's needed to print Node 
+   * class's object
+   */
+   public String toString()
     {
+        String result=Integer.toString(this.Bnumber);
         return this.Bnumber+":"+this.courseName;
     }
+   /**To clone the node's object
+    */ 
     
-    public Node clone() throws CloneNotSupportedException
+    public Node clone()
     {
+	try{
         List<String> courseClone=new ArrayList<String>(this.courseName);
         Node cloned = new Node(this.Bnumber,courseClone);
         return cloned;
+       }catch(Exception ce)
+       {
+        System.out.println("problem with cloning");
+       }
+	return null;
     }
-    
+   
+    /** This function will remove the course if found
+     * and notifys observers
+     * @param A string named course, the course needs to
+     * to be removed
+     * @return Void return
+     */
     public void removeCourse(String course)
     {
-        System.out.print(this+" "+this.Bnumber+this.courseName);
          if(this.courseName.contains(course))
          {
              this.courseName.remove(course);
          }
-        System.out.println(" now course="+this.courseName);
-        removeObserverCourse(course);
+        notifyall(course);
     }
+
+     /** This function will add the course in the node
+     * @param A string named course, the course needs to
+     * to be added
+     * @return Void return
+     */
     public void addCourse(String course)
     {
-        System.out.print(this+" "+this.Bnumber+this.courseName);
          if(!courseName.contains(course))
          {
              this.courseName.add(course);
          }
-        System.out.println(" now course="+this.courseName);
-        addObserverCourse(course);
-    }
-    @Override
-    public void removeObserverCourse(String course) 
-    {
-        if(!observers.isEmpty())
-        {
-            System.out.println("inside"+this+" "+this.observers);
-     
-            for (Node observer : observers) 
-         {
-            observer.removeCourse(course);
-         } 
-        }    
     }
 
+   /** This function will notifys observers
+     * @param A string named course, the course needs to
+     * be removed
+     * @return Void return
+     */
     @Override
-    public void addObserverCourse(String course) {
-        
-        if(!observers.isEmpty())
-        {
-            System.out.println("inside"+this+" "+this.observers);
-        for (Node observer : observers) 
-         {
-            observer.addCourse(course);
-         }
-        }
-    }
-
-    @Override
-    public void notifyObserver() {
+    public void notifyall(String course) {
        for (Node observer : observers) {
-         observer.update();
+         observer.update(course);
       }
     }
-
+    
+    /** This function will call remove method 
+     * to update the course names of observer
+     * @param A string named course, the course needs to
+     * to be removed
+     * @return Void return
+     */
     @Override
-    public void update() {
-       System.out.println("changes made"+this+"node="); //To change body of generated methods, choose Tools | Templates.
+    public void update(String course) {
+        this.removeCourse(course);
     }
 
+    /**This function will register observers
+     * @param Node's object that will be observer
+    */
     @Override
     public void registerObserver(Node o) {
        if(!observers.contains(o))
@@ -130,6 +172,10 @@ public class Node implements SubjectI, ObserverI,Cloneable{
         }
     }
 
+   /**This function will remove observers
+     * @param Node's object that will be removed from
+     * observers list
+    */
     @Override
     public void removeObserver(Node o) {
       if(observers.contains(o))
